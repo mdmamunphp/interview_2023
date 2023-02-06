@@ -9,16 +9,45 @@
                
 
                var  func_insert=function(){
+                var name=$("#name").val();
+                    var data="name="+name;
                     $.ajax({
-                    url: "http://localhost:8000/interview_practicle/insert.php",
-                        success: function(job_no){
-                            alert(`AJAX call was successful! ${job_no}`);
+                    url: "http://localhost:8000/interview_2023/php_practice/insert.php",
+                        data:data,
+                        success: function(data){
+                            alert(`AJAX call was successful! ${data}`);
+                     
+                          
                         },
                         error: function() {
                             alert('There was some error performing the AJAX call!');
                         }
                     });
                 }
+
+                
+                    $.ajax({
+                    url: "http://localhost:8000/interview_2023/php_practice/insert.php",
+                    success: function(view){
+                        // alert(`all data ${view}`);.
+                        //  var data = JSON.parse(view);
+                        // console.table(data);
+                        console.log(view);
+                        var rows = "";
+                            for (var i = 0; i < view.length; i++) {
+                            rows += "<tr><td>name:" + view[i]["name"] + "</td><td>pass:" + view[i].pass + "</td></tr>";
+                            
+                            }
+                            // $("#dataContainer").html(rows);
+                        
+                        $("#all_data_view").html(rows);
+
+                    },
+                        error: function() {
+                            alert('There was some error performing the AJAX call!');
+                        }
+                    });
+                
             </script>
             <body>
 
@@ -75,10 +104,16 @@
                                     <input type="submit" name="login" id="login" value="Send" onclick="func_insert()" >
                                    
                                 </td>
-                                
+                                <td>
+                                    <input type="submit" name="login" id="login" value="All View" onclick="func_view()" >
+                                   
+                                </td>
                             </tr>
                         </table>
 
                     </form>
+                    <div id="all_data_view">
+
+                    </div>
             </body>
     </html>

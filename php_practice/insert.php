@@ -1,8 +1,7 @@
 
 
  <?php
-require_once __DIR__ . '/vendor/autoload.php';
-use \Firebase\JWT\JWT;
+ 
 
 $servername="localhost";
 $username="root";
@@ -12,9 +11,14 @@ $database="interview";
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
     }
+    
+    header("Access-Control-Allow-Origin: *");
+//    echo $_SERVER['REQUEST_METHOD'];
     if($_SERVER['REQUEST_METHOD']=="POST"){
-        extract($_POST);
-    //    $name=$_POST['name'];
+       
+          //    $name=$_POST['name'];
+
+
            
             $rid=$conn->query("insert into test set name='$name',pass='1234'");
             $rid2=$conn->query("update  test set name='md mamun',pass='12345' where id=1");
@@ -36,28 +40,50 @@ $database="interview";
             }else{
                 echo "data delete is not done.<br>";
             }
+    }else if($_SERVER['REQUEST_METHOD']=="GET"){
+         extract($_GET);
+   
+ 
+        // $rid=$conn->query("insert into test set name='$name',pass='1234'");
+        // if($rid==1){
+        //     echo "data save is done/ _SERVER / GET name='$name'.<br>";
+        // }
+
+        $data=$conn->query("select * from test");
+        $view="<table>";
+        $view.="<tr><td>SL</td><td>Name</td><td>Pass</td></tr>";
+        
+        $arr=array();
+        $i=1;
+        while($res=$data->fetch_assoc()){
+            // $view.="<tr>";
+            // $view.="<td>".$i."</td>";
+            // $view.="<td>".$res['name']."</td>";
+            // $view.="<td>".$res['pass']."</td>";
+            $arr[$i]['name']=$res['name'];
+            $arr[$i]['pass']=$res['pass'];
+            // $view.="</tr>";
+            $i++;
+        }
+        $view.="<table>";
+         echo json_encode($arr);
+    //  echo  $view;
+     
+
+    }else if($_REQUEST['REQUEST_METHOD']=="GET"){
+        extract($_POST);
+        $rid=$conn->query("insert into test set name='$name',pass='1234'");
+        if($rid==1){
+            echo "data save is done/ _REQUEST / GET.<br>";
+        }
     }else{
+        
         echo "data not found";
     }
-    // $arr=array(1=>"BANGLA",2=>"MATH",3=>"ENGLISH");
-    // header("Content-type:applocation.json");
-    // echo json_encode($arr);
+
     
-  
+    
 
-    $this->token = array(
-            //Adding the identifier to the token (who issue the token)
-            "iss" => $iss,
-            "aud" => $iss,
-            // Adding the current timestamp to the token, for identifying that when the token was issued.
-            "iat" => $this->issuedAt,
-            // Token expiration
-            "exp" => $this->expire,
-            // Payload
-            "data" => $data
-        );
-
-        $this->jwt = JWT::encode($this->token, $this->jwt_secrect, 'HS256');
-        return $this->jwt;
+    
 
     ?>
